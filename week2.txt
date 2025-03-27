@@ -1,0 +1,102 @@
+MySQL의 구조
+- 표가 여러 개 생기면 정리정돈해야 함.
+- 서버 > 스키마(폴더) > 표(파일) > 데이터
+- 같은 말로, 데이터베이스 서버 > 데이터베이스 > 표 > 데이터. 이름이 헷갈려서 위처럼 사용하겠다.
+
+
+----------------------------------- 서버
+
+서버 접속
+- 사용자마다 권한을 다르게 설정할 수 있음.
+
+터미널에서 '서버' 접속 바로 가능.
+bin ./mysql -uroot -p
+- root는 대부분 모든 권한이 있는 계정임.
+- 비밀번호 치고 진입
+
+----------------------------------- 스키마
+
+서버에 들어왔으니 스키마에 접속하자.
+CREATE DATABASE opentutorials;
+
+스키마 만들어졌는지 확인
+SHOW DATABASES;
+
+스키마에 접속
+USE opentutorials;
+
+----------------------------------- 표
+
+표를 생성하자, 컬럼명 지정하는 것.
+CREATE TABLE topic(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    title VARCHAR(100) NOT NULL,
+    description TEXT NULL,
+    created DATETIME NOT NULL,
+    author VARCHAR(30) NULL,
+    profile VARCHAR(100) NULL,
+    PRIMARY KEY(id)
+);
+
+- () 안에 숫자는 몇 자까지 보이게 할 것인가임. 보통 INT는 11로 지정함.
+- INT 대신 BIGINT 를 쓸 수 있지만, 저장공간을 너무 많이 차지함.
+- NULL 가능하면 NULL, NULL 허용하지 않으려면 NOT NULL
+- AUTO_INCREMENT 를 사용하면 자동으로 늘어나게 할 수 있음. 특히 Index에 이걸 적용하면 아주 편리하겠지요.
+
+- VARCHAR보다, CHAR보다, TEXT가 제일 길게 가능해서 본문(description)은 TEXT로 하자.
+
+- DATETIME은 날짜와 시간이 함께 가능하다.
+
+- 프라이머리 키: 중복 불가함.
+
+----------------------------------- 데이터: INSERT
+
+- 데이터 넣기 전에 꿀팁!
+- DESC topic;을 치면 컬럼명을 볼 수 있음!!!!!!
+
+INSERT INTO topic (
+    title, 
+    description, 
+    created,
+    author,
+    profile
+    ) 
+    VALUES(
+        'MySQL', 
+        'MySQL is ...',
+        NOW(),
+        'egoing',
+        'developer'
+        );
+
+----------------------------------- 데이터: SELECT(READ)
+
+SELECT * FROM topic;
+- 이걸 보면 모든 데이터 확인할 수 있음!
+- 그냥 모든 명령어 칠 때 이거 한 번씩 쳐서 확인해보면 좋음!
+
+SELECT id, title, created, author FROM topic;
+- 이렇게 원하는 컬럼만 볼 수 있음.
+
+* 필터링: WHERE
+SELECT id, title, created, author FROM topic WHERE author='egoing';
+
+* 정렬: ORDER BY
+SELECT id, title, created, author FROM topic WHERE author='egoing' ORDER BY id DESC;
+- DESC: 큰거 먼저
+
+* 행 제한: LIMIT
+SELECT id, title, created, author FROM topic WHERE author='egoing' ORDER BY id DESC LIMIT 2;
+
+----------------------------------- 데이터: UPDATE
+
+UPDATE topic SET description='Oracle is ...', title='Oracle' WEHRE id=2;
+- WHERE문 빠뜨리면 재앙이...
+
+----------------------------------- 데이터: DELETE
+
+DELETE FROM topic WHERE id = 2;
+- WHERE문 빠뜨리면 재앙이...
+
+
+
